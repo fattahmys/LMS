@@ -6,34 +6,29 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/css/app.css')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <title>{{$title}}</title>
 </head>
 <body class="h-full">
-    <!--
-  This example requires updating your template:
+    <div class="min-h-full">
+        <x-navbar></x-navbar>
+        @if (!request()->is('kelas*'))
+            <x-header>{{$title}}</x-header>
+        @endif
+        
+        <div class="flex h-screen">
+                @if (request()->is('kelas*'))
+                <x-sidebar>{{$title}}</x-sidebar>
+                @endif  
 
-  ```
-  <html class="h-full bg-gray-100">
-  <body class="h-full">
-  ```
--->
-<div class="min-h-full">
-   <x-navbar></x-navbar>
-   @if (!request()->routeIs('kelas'))
-   <x-header>{{$title}}</x-header>
-      @endif
-    
-    <main>
-      <div class="mx-auto max-w-7xl px-4  sm:px-6 lg:px-8">
-        {{$slot}}
-      </div>
-      @if (request()->routeIs('kelas'))
-      <x-sidebar></x-sidebar>
-      @endif
-    
-    </main>
-  </div>
-  
+                <!-- Mengatur main sebagai flex container dan menambahkan lebar -->
+                <main class="flex-1 p-6 overflow-y-auto"> <!-- flex-1 untuk mengisi ruang yang tersisa -->
+                    {{$slot}}
+                </main>
+            </div>
+    </div>
+
+    <x-alert></x-alert>
 </body>
 </html>

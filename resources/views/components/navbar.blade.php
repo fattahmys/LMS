@@ -12,20 +12,58 @@
                 <x-nav-link href="{{route('peserta')}}" :active="request()->routeIs('peserta')">Peserta</x-nav-link>
                 <x-nav-link href="{{route('matapelajaran')}}" :active="request()->routeIs('matapelajaran')">Mata Pelajaran</x-nav-link>
                 @if (Auth::user() && Auth::user()->isAdmin()) 
-                <x-nav-link href="{{ route('kelas') }}" :active="request()->routeIs('kelas')">Kelas</x-nav-link>
+                <x-nav-link href="{{ route('kelas') }}" :active="request()->is('kelas*')">Kelas</x-nav-link>
                 @endif
               </div>
           </div>
       </div>
         <div class="hidden md:block">
           <div class="ml-4 flex items-center md:ml-6">
-            <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-              <span class="absolute -inset-1.5"></span>
-              <span class="sr-only">View notifications</span>
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-              </svg>
-            </button>
+            <div x-data="{ isOpen: false }" class="relative">
+              <div>
+                  <button type="button" @click="isOpen = true" class="flex mr-5 relative rounded-full p-1 text-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                      <span class="absolute -inset-1.5"></span>
+                      <x-gravityui-plus class="h-3"/>
+                      <span class="text-sm font-bold">Buat Kelas</span>
+                  </button>
+              </div>
+          
+              <!-- Modal -->
+                <div x-show="isOpen" x-init="@if($errors->any()) isOpen = true @endif" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+                  <div class="bg-white rounded-lg p-6 w-96 max-h-[80%] overflow-auto">
+                      <h2 class="text-lg font-bold mb-4">Buat Kelas Baru</h2>
+                      <form action="{{ route('kelas.store') }}" method="POST" id="kelasForm">
+                        @csrf
+                          <div class="mb-4">
+                              <label for="nama" class="block text-sm font-medium text-gray-700">Nama Kelas</label>
+                              <input type="text" id="nama" name="nama" required class="mt-1 block w-full p-2 border border-gray-300 rounded" placeholder="Masukkan nama kelas">
+                              @error('nama')
+                                  <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                              @enderror
+                            </div>
+                          <div class="mb-4">
+                              <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                              <textarea id="deskripsi" name="deskripsi" rows="3" required class="mt-1 block w-full p-2 border border-gray-300 rounded" placeholder="Masukkan deskripsi kelas"></textarea>
+                              @error('deskripsi')
+                              <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                              @enderror
+                            </div>
+                          <div class="mb-4">
+                            <label for="matapelajaran" class="block text-sm font-medium text-gray-700">Mata Pelajaran</label>
+                            <input type="text" id="matapelajaran" name="matapelajaran" required class="mt-1 block w-full p-2 border border-gray-300 rounded" placeholder="Masukkan nama kelas">
+                            @error('matapelajaran')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                          </div>
+                          <!-- Tambahkan lebih banyak input jika perlu -->
+                          <div class="flex justify-end">
+                              <button type="button" @click="isOpen = false" class="mt-4 px-4 py-2 bg-gray-800 text-white rounded mr-2">Tutup</button>
+                              <button type="submit" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Buat Kelas</button>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
 
             <!-- Profile dropdown -->
             <div class="relative ml-3">
@@ -68,6 +106,12 @@
           </div>
         </div>
         <div class="-mr-2 flex md:hidden">
+          <div class="relative inline-flex items-center justify-center p-2 text-gray-400">
+            <button type="button" class=" flex mr-5 relative rounded-full p-1 text-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+              <x-gravityui-plus class="h-4"/>
+              <span>Buat Kelas</span>
+            </button>
+          </div>
           <!-- Mobile menu button -->
           <button  @click="isOpen = !isOpen" type="button" class="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" aria-controls="mobile-menu" aria-expanded="false">
             <span class="absolute -inset-0.5"></span>
